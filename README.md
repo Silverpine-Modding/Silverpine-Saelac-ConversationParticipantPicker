@@ -4,7 +4,9 @@ Silverpine BepInEx mod that lets the player choose nearby visible NPCs when begi
 
 Created by **Saelac and ChatGPT**.
 
-**Current version:** 1.1.0
+**Current version:** 1.1.1
+
+The conversation-choice menu, participant picker, and selection review each have a **Cancel** button that closes the menu without starting a conversation. The picker shows three NPCs per page, leaving room for navigation, review, and cancellation without exceeding six buttons.
 
 ## Installation
 

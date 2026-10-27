@@ -14,7 +14,7 @@ public sealed class Plugin : BaseUnityPlugin
     public const string PluginGuid =
         "salt.silverpine.conversationparticipantpicker";
     public const string PluginName = "Conversation Participant Picker";
-    public const string PluginVersion = "1.1.0";
+    public const string PluginVersion = "1.1.1";
 
     private Harmony _harmony;
 
@@ -31,7 +31,8 @@ internal static class ConversationParticipantPickerPatch
 {
     private const string AcaciaUnlockedGuid =
         "salt.silverpine.acaciaunlocked";
-    private const int ParticipantsPerPage = 4;
+    // Leave room for Next page, Review, and Cancel in the six-button row.
+    private const int ParticipantsPerPage = 3;
 
     private static bool Prefix(
         NeuralNPC __instance,
@@ -107,7 +108,10 @@ internal static class ConversationParticipantPickerPatch
                         ShowParticipantPicker(
                             new HashSet<NeuralNPC> { __instance },
                             0);
-                    }));
+                    }),
+                // DialogOption closes the menu by default. No callback means
+                // cancellation never invokes either conversation trigger.
+                new DialogOption("Cancel", null));
         }
 
         void ShowParticipantPicker(
@@ -159,6 +163,7 @@ internal static class ConversationParticipantPickerPatch
             options.Add(new DialogOption(
                 "Review (" + (selected.Count - 1) + " selected)",
                 delegate { ShowSelectionReview(selected, pageIndex); }));
+            options.Add(new DialogOption("Cancel", null));
 
             DialogBox.Instance.DisplayTextNoDialog(
                 "Choose who joins "
@@ -194,6 +199,7 @@ internal static class ConversationParticipantPickerPatch
             options.Add(new DialogOption(
                 "Back",
                 ShowConversationOptions));
+            options.Add(new DialogOption("Cancel", null));
 
             DialogBox.Instance.DisplayTextNoDialog(
                 participants.Count > 1
